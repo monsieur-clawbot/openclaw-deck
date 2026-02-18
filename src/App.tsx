@@ -6,44 +6,26 @@ import { TopBar } from "./components/TopBar";
 import { StatusBar } from "./components/StatusBar";
 import { AddAgentModal } from "./components/AddAgentModal";
 import type { AgentConfig } from "./types";
+// ─── Agent Column Config ─────────────────────────────────────────────────────
+// To add, remove, or reorder agent columns, edit src/config/agents.ts.
+// No need to touch component code.
+import { PINNED_AGENTS } from "./config/agents";
 import "./App.css";
 
 /**
- * Agent column configuration.
+ * Map pinned agent definitions from config to the AgentConfig shape
+ * expected by the store and components.
  *
- * You're running default single-agent mode, so there's one agent: "main".
- * The Gateway routes all messages to the default workspace at:
- *   /Users/austenallred/.openclaw/workspace
- *
- * To add more columns later, set up multi-agent in openclaw.json:
- *   { "agents": { "list": [
- *     { "id": "research", "workspace": "~/.openclaw/workspace-research" },
- *     { "id": "codegen",  "workspace": "~/.openclaw/workspace-codegen" },
- *   ]}}
- *
- * Then add matching entries here.
+ * The icon field uses the 1-based column index so the numbered badge
+ * in the column header is preserved. To use custom icons, set icon
+ * per entry in src/config/agents.ts and pass it through here.
  */
-const AGENT_ACCENTS = [
-  "#22d3ee",
-  "#a78bfa",
-  "#34d399",
-  "#f59e0b",
-  "#f472b6",
-  "#60a5fa",
-  "#facc15",
-  "#fb7185",
-  "#4ade80",
-  "#c084fc",
-  "#f97316",
-  "#2dd4bf",
-];
-
-function buildDefaultAgents(count: number): AgentConfig[] {
-  return Array.from({ length: count }, (_, i) => ({
-    id: `agent-${i + 1}`,
-    name: `Agent ${i + 1}`,
+function buildPinnedAgents(): AgentConfig[] {
+  return PINNED_AGENTS.map((def, i) => ({
+    id: def.id,
+    name: def.name,
     icon: String(i + 1),
-    accent: AGENT_ACCENTS[i % AGENT_ACCENTS.length],
+    accent: def.accent,
     context: "",
     model: "claude-sonnet-4-5",
   }));
@@ -75,7 +57,7 @@ export default function App() {
   const [activeTab, setActiveTab] = useState("All Agents");
   const [showAddModal, setShowAddModal] = useState(false);
   const [initialAgents] = useState<AgentConfig[]>(() =>
-    buildDefaultAgents(7)
+    buildPinnedAgents()
   );
   const columnOrder = useDeckStore((s) => s.columnOrder);
   const createAgentOnGateway = useDeckStore((s) => s.createAgentOnGateway);

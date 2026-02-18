@@ -216,7 +216,7 @@ export function AgentColumn({ agentId, columnIndex }: { agentId: string; columnI
             borderColor: `${config.accent}30`,
           }}
         >
-          {columnIndex + 1}
+          {config.icon || columnIndex + 1}
         </div>
         <div className={styles.headerInfo}>
           <div className={styles.headerRow}>
@@ -265,7 +265,7 @@ export function AgentColumn({ agentId, columnIndex }: { agentId: string; columnI
               className={styles.emptyIcon}
               style={{ color: config.accent }}
             >
-              {columnIndex + 1}
+              {config.icon || columnIndex + 1}
             </div>
             <p>Send a message to start a conversation with {config.name}</p>
           </div>
